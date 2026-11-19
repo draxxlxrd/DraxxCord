@@ -41,7 +41,8 @@
         "@vap/shiki": "catalog:",
         "@vencord/monaco-editor": "catalog:",
         "fflate": "catalog:",
-        "gifenc": "catalog:"
+        "gifenc": "catalog:",
+        "jszip": "^3.10.2"
     },
     "devDependencies": {
         "@stylistic/eslint-plugin": "catalog:",
