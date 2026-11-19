@@ -1,0 +1,133 @@
+/* Scoped rules only. Does not change existing FakeDM fonts or theme. */
+.dc-media-root { display:flex; flex-direction:column; gap:10px; padding:12px 16px 16px; background:#050505; color:#f5f5f5; max-height:68vh; overflow-y:auto; }
+.dc-media-note { margin:2px 0; color:#a7a7aa; font-size:12px; line-height:1.5; }
+.dc-media-label { font-size:12px; letter-spacing:.04em; font-weight:700; color:#fff; margin-top:6px; }
+.dc-media-switch { display:flex; gap:6px; flex-wrap:wrap; }
+.dc-media-root button { font:inherit; cursor:pointer; color:#eee; border-radius:8px; border:1px solid #5d1515; padding:8px 10px; background:#131013; }
+.dc-media-root button:hover { border-color:#f00; }
+.dc-media-root .dc-media-on, .dc-media-root .dc-media-primary { background:#df0000; color:white; border-color:#f00; }
+.dc-media-root button:disabled { opacity:.45; cursor:not-allowed; }
+.dc-media-input { width:100%; box-sizing:border-box; background:#090909; border:1px solid #a00000; padding:9px 12px; border-radius:8px; color:#fff; font:inherit; }
+.dc-media-file { display:block; max-width:100%; color:#f4f4f4; }
+.dc-media-filename { font-size:12px; color:#ccc; overflow-wrap:anywhere; }
+.dc-media-preview { background:#0a0a0a; border:1px solid #750000; border-radius:9px; overflow:hidden; padding:8px; display:flex; justify-content:center; }
+.dc-media-preview img, .dc-media-preview video { display:block; max-height:225px; max-width:100%; object-fit:contain; }
+.dc-media-actions { display:flex; gap:8px; }
+.dc-media-actions button:first-child { flex:1; }
+.dc-media-error { background:#370000; border:1px solid #f22; padding:9px; border-radius:8px; font-size:12px; color:#fff; }
+.dc-media-saved { max-height:150px; overflow-y:auto; }
+.dc-media-saved-row { display:flex; justify-content:space-between; gap:10px; align-items:center; border-bottom:1px solid #302020; padding:6px 0; font-size:12px; }
+.dc-media-saved-row span { overflow-wrap:anywhere; }
+
+/* Standalone entry point below the original three FakeDM tabs. */
+.dc-media-launch { width:100%; margin:8px 0 2px; padding:10px 12px; border-radius:8px; background:#0a0000; color:#fff; border:1px solid #b90000; cursor:pointer; font:inherit; font-weight:700; }
+.dc-media-launch:hover { background:#350000; border-color:#ff0000; }
+
+/* Inline fake media below the correct fake message; never affects real messages. */
+.dc-media-inline { display: inline-flex; position: relative; max-width: min(500px, 100%); max-height: 440px; margin: 3px 0 4px; border-radius: 8px; overflow: hidden; background: #101014; border: 1px solid #25252d; vertical-align: top; }
+.dc-media-inline img, .dc-media-inline video { display: block; max-width: 100%; max-height: 430px; width: auto; height: auto; object-fit: contain; }
+.dc-media-inline video { width: min(500px, 100%); }
+.dc-media-inline-error { color: #eee; padding: 14px 18px; font-size: 12px; }
+
+/* DRAXXCORD_MEDIA_GAP_FIX_v22_1_BEGIN */
+/* Only local Media Injector messages contain .dc-media-inline. Keep their
+   zero-width payload in the data layer, but remove its empty text row in UI. */
+:is([id^="chat-messages-"], [class*="messageListItem_"]):has(.dc-media-inline)  :is([class*="messageContent"], [id^="message-content-"]) {
+    display: none !important;
+}
+/* Vencord's accessory container may add top spacing for a text message.
+   Suppress that spacing ONLY when it contains our local media. */
+:is([id^="chat-messages-"], [class*="messageListItem_"]):has(.dc-media-inline)
+:is([class*="accessories_"], [class*="messageAccessories_"]) {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+:is([id^="chat-messages-"], [class*="messageListItem_"]):has(.dc-media-inline)
+:is([class*="container_"]:has(> .dc-media-inline), .dc-media-inline) {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+/* Image/video sizes are unchanged; only vertical spacing is reduced. */
+.dc-media-inline {
+    margin-top: 0 !important;
+    margin-bottom: 2px !important;
+}
+/* DRAXXCORD_MEDIA_GAP_FIX_v22_1_END */
+
+/* DRAXXCORD_MEDIA_CLICKABLE_V22_2_BEGIN */
+/* Only synthetic Media Injector image/GIF; video uses its native player. */
+.dc-media-inline .dc-media-open-image {
+    all: unset;
+    box-sizing: border-box;
+    display: block;
+    max-width: 100%;
+    cursor: zoom-in;
+    line-height: 0;
+    border-radius: inherit;
+}
+.dc-media-inline .dc-media-open-image img {
+    display: block;
+    max-width: 100%;
+    max-height: 430px;
+    height: auto;
+    width: auto;
+    object-fit: contain;
+    pointer-events: none;
+}
+.dc-media-inline .dc-media-open-image:focus-visible {
+    outline: 2px solid var(--brand-500, #ff0000);
+    outline-offset: -2px;
+}
+/* DRAXXCORD_MEDIA_CLICKABLE_V22_2_END */
+
+/* DRAXXCORD_MEDIA_FRAME_V22_3_BEGIN */
+/* Only locally injected Image/GIF frames. Video remains unchanged. */
+.dc-media-inline:has(> .dc-media-open-image) {
+    display: inline-block;
+    box-sizing: border-box;
+    max-width: min(500px, 100%);
+    min-width: 0;
+    vertical-align: top;
+}
+.dc-media-inline > .dc-media-open-image {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    line-height: 0;
+}
+.dc-media-inline > .dc-media-open-image > img {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    max-height: 430px;
+    object-fit: contain;
+}
+/* DRAXXCORD_MEDIA_FRAME_V22_3_END */
+
+/* DRAXXCORD_NATIVE_VIEWER_V22_6_STYLE: local image-only Save original button. */
+.dc-media-inline .dc-media-save-original {
+    position: absolute;
+    top: 7px;
+    right: 7px;
+    z-index: 3;
+    width: 29px;
+    height: 29px;
+    padding: 0;
+    display: grid;
+    place-items: center;
+    font: 700 19px/1 system-ui, sans-serif;
+    color: #fff;
+    background: rgba(5,5,5,.88);
+    border: 1px solid rgba(255,255,255,.3);
+    border-radius: 7px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity .15s ease;
+}
+.dc-media-inline:hover .dc-media-save-original,
+.dc-media-inline .dc-media-save-original:focus-visible { opacity: 1; }
+.dc-media-inline .dc-media-save-original:hover { background: #3c0808; border-color: #ff3333; }
+@media (hover: none) { .dc-media-inline .dc-media-save-original { opacity: 1; } }

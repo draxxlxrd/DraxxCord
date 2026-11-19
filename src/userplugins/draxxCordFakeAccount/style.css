@@ -1,0 +1,40 @@
+/* DraxxCord native FakeAccount: no extra submenu/header/custom rows.
+   Discord renders the account list using its own components and styling. */
+.vc-draxxcord-native-fake-host { position: relative !important; }
+.vc-draxxcord-native-fake-panel {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 0 2px;
+    min-width: 0;
+    pointer-events: none;
+    background: var(--background-base-lowest, var(--background-primary, #232428));
+    border-radius: 4px;
+}
+.vc-draxxcord-native-fake-avatar {
+    flex: 0 0 auto;
+    width: 31px;
+    height: 31px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+.vc-draxxcord-native-fake-names {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    flex: 1;
+    line-height: 1.15;
+}
+.vc-draxxcord-native-fake-title,
+.vc-draxxcord-native-fake-subtitle {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 12px;
+}
+.vc-draxxcord-native-fake-title { font-weight: 600; }
+.vc-draxxcord-native-fake-subtitle { font-size: 10px; color: var(--text-muted, #a0a4ac); }

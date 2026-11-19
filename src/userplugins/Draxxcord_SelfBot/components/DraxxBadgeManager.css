@@ -1,0 +1,37 @@
+/* All styles scoped to the Badges tab; existing panel CSS untouched. */
+@import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap");
+.dc-v2-root{box-sizing:border-box;color:#fff;padding:12px 12px 26px;background:#000;min-height:100%;font-family:Fredoka,Arial,sans-serif!important;overflow-y:auto}
+.dc-v2-root *{box-sizing:border-box;font-family:inherit}
+.dc-v2-heading{display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:1px solid #690000;padding-bottom:12px}
+.dc-v2-heading strong{display:block;font-size:18px;letter-spacing:.5px;font-weight:700;color:#fff}
+.dc-v2-heading strong span{color:#f00}
+.dc-v2-heading small{font-size:11px;color:#a4a4a4;display:block;margin-top:3px}
+.dc-v2-heading>b{border:1px solid #f00;background:#210000;color:#f00;padding:6px 10px;border-radius:10px;font-size:12px;white-space:nowrap}
+.dc-v2-note{padding:10px;margin:12px 0;background:#130606;border:1px solid #520909;border-radius:10px;color:#c3b3b3;font-size:11px;line-height:1.5}
+.dc-v2-preview{border:1px solid #570000;background:#0d0000;padding:10px;border-radius:10px;margin:10px 0}
+.dc-v2-preview-label{font-size:10px;color:#f00;font-weight:700;letter-spacing:1px;margin-bottom:8px}
+.dc-v2-preview-images{display:flex;flex-wrap:wrap;gap:8px;align-items:center;min-height:23px}
+.dc-v2-preview-images>img{width:23px;height:23px;object-fit:contain}
+.dc-v2-preview-images>span{font-size:11px;color:#858585}
+.dc-v2-search{width:100%;height:36px;background:#080808!important;border:1px solid #600000!important;border-radius:8px;padding:0 11px;color:#fff!important;outline:none;font-size:12px}
+.dc-v2-search:focus{border-color:#f00!important;box-shadow:0 0 0 1px #f00}
+.dc-v2-groups{display:flex;gap:5px;flex-wrap:wrap;margin:10px 0}
+.dc-v2-groups button,.dc-v2-toolbar button{cursor:pointer;background:#150000;border:1px solid #4f0000;color:#c9c9c9;padding:5px 9px;border-radius:7px;font-size:10px}
+.dc-v2-groups button:hover,.dc-v2-toolbar button:hover{border-color:#f00;color:#fff}
+.dc-v2-groups .dc-v2-group-active{background:#f00;color:#fff;border-color:#f00}
+.dc-v2-toolbar{display:flex;align-items:center;justify-content:space-between;gap:5px;margin:9px 0}
+.dc-v2-toolbar>span{font-size:10px;color:#939393}
+.dc-v2-toolbar>div{display:flex;gap:4px}
+.dc-v2-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.dc-v2-badge-card{display:flex;align-items:center;gap:7px;min-height:47px;padding:8px;border-radius:9px;background:#0d0d0d;border:1px solid #292020;cursor:pointer;position:relative}
+.dc-v2-badge-card:hover{background:#190808;border-color:#960000}
+.dc-v2-badge-card.dc-v2-selected{border-color:#f00;background:#1b0000}
+.dc-v2-badge-card>img{width:24px;height:24px;flex:none;object-fit:contain}
+.dc-v2-badge-card>span{flex:1;font-size:10.5px;line-height:1.2;min-width:0;color:#ddd}
+.dc-v2-badge-card>input{position:absolute;opacity:0;right:9px;width:18px;height:18px;cursor:pointer}
+.dc-v2-badge-card>i{display:block;flex:none;width:24px;height:14px;border-radius:12px;background:#444;border:1px solid #555;position:relative;pointer-events:none}
+.dc-v2-badge-card>i:before{content:"";position:absolute;left:1px;top:1px;width:10px;height:10px;background:#ccc;border-radius:50%;transition:transform .15s}
+.dc-v2-badge-card.dc-v2-selected>i{background:#f00;border-color:#f00}
+.dc-v2-badge-card.dc-v2-selected>i:before{background:#fff;transform:translateX(10px)}
+.dc-v2-no-results{color:#999;font-size:12px;padding:14px}
+@media(max-width:420px){.dc-v2-grid{grid-template-columns:1fr}.dc-v2-toolbar{flex-direction:column;align-items:start}}

@@ -1,0 +1,784 @@
+@import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap");
+/* FakeDM composer ΓÇö a self-contained panel.
+ *
+ * Every colour below is fixed and owned by this plugin. It deliberately inherits
+ * NOTHING from Discord's variables, because a theme is free to redefine them into
+ * each other: CrimsonNight draws the modal at #1c1c25 while --background-secondary
+ * is #111116 ΓÇö a 1.11:1 ratio, so cards and inputs rendered as invisible
+ * rectangles. Deriving surfaces from --text-normal instead did not save it either;
+ * that was readable in isolation but far too faint in place. Owning the palette is
+ * the only way the panel looks the same for everyone.
+ *
+ * Verified, not eyeballed (WCAG, computed against these exact hexes):
+ *   text on panel 16.09:1 ┬╖ dim text 7.71:1 ┬╖ text on card 11.63:1 ┬╖ gold 9.15:1
+ *   card vs panel 1.38:1 ┬╖ border vs panel 2.36:1  (the broken pair was 1.11:1)
+ * The well is near-black on near-black by design ΓÇö its 2.36:1 border is what draws
+ * it, the same way Discord's own inputs work.
+ *
+ * Gold #d4af37 is Esharq's brand colour, shared with the site.
+ */
+
+.esharq-fakedm {
+    --fdm-bg: #0e0e13;
+    --fdm-well: #050508;
+    --fdm-card: #2b2b3a;
+    --fdm-card-hover: #3a3a4e;
+    --fdm-border: #4d4d68;
+    --fdm-text: #eaeaf2;
+    --fdm-dim: #a2a2ba;
+    --fdm-accent: #d4af37;
+    --fdm-green: #2f9e5c;
+    --fdm-red: #e0384b;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    /* Explicit, not inherited: measured content-box in a bare page, so the 32px
+       padding + 2px border would be added on top of the width instead of fitting
+       inside it. */
+    box-sizing: border-box;
+    margin: -4px -4px 4px;
+    padding: 16px;
+    border: 1px solid var(--fdm-border);
+    border-radius: 12px;
+    background: var(--fdm-bg);
+    color: var(--fdm-text);
+}
+
+.esharq-fakedm-note {
+    color: var(--fdm-dim);
+    padding: 6px 10px;
+    border-radius: 6px;
+    background: var(--fdm-well);
+    border-inline-start: 3px solid var(--fdm-accent);
+}
+
+.esharq-fakedm-label {
+    margin-top: 6px;
+    color: var(--fdm-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+/* Incoming-ring note: a touch more prominent than the generic note. */
+.esharq-fakedm-ring-note {
+    margin-top: 4px;
+    line-height: 1.55;
+}
+
+/* ΓöÇΓöÇ Tabs ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
+.esharq-fakedm-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    padding: 4px;
+    border-radius: 10px;
+    background: var(--fdm-well);
+}
+
+.esharq-fakedm-tab {
+    padding: 8px;
+    border: none;
+    border-radius: 7px;
+    background: transparent;
+    color: var(--fdm-dim);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.esharq-fakedm-tab:hover {
+    color: var(--fdm-text);
+    background: var(--fdm-card-hover);
+}
+
+.esharq-fakedm-tab-on,
+.esharq-fakedm-tab-on:hover {
+    /* Panel-dark on gold is 9.15:1; white on gold is 2.10:1 and fails AA. */
+    color: var(--fdm-bg);
+    background: var(--fdm-accent);
+}
+
+/* ΓöÇΓöÇ Sender picker ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
+.esharq-fakedm-people {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+/* Group DMs can hold more than two people; let the cards flow instead. */
+.esharq-fakedm-people-wrap {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    max-height: 148px;
+    overflow-y: auto;
+}
+
+.esharq-fakedm-person {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    padding: 8px 10px;
+    border: 1px solid var(--fdm-border);
+    border-radius: 8px;
+    background: var(--fdm-card);
+    color: var(--fdm-text);
+    cursor: pointer;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.esharq-fakedm-person:hover {
+    background: var(--fdm-card-hover);
+}
+
+.esharq-fakedm-person-on {
+    border-color: var(--fdm-accent);
+    background: var(--fdm-card-hover);
+}
+
+.esharq-fakedm-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    object-fit: cover;
+}
+
+/* min-width:0 + truncation: a long display name must not widen the grid column. */
+.esharq-fakedm-person-name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* ΓöÇΓöÇ Rows, chips, inputs ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
+.esharq-fakedm-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.esharq-fakedm-row-wrap {
+    flex-wrap: wrap;
+}
+
+.esharq-fakedm-chip {
+    padding: 5px 10px;
+    border: 1px solid var(--fdm-border);
+    border-radius: 999px;
+    background: var(--fdm-card);
+    color: var(--fdm-dim);
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.esharq-fakedm-chip:hover {
+    color: var(--fdm-text);
+    border-color: var(--fdm-accent);
+}
+
+.esharq-fakedm-date,
+.esharq-fakedm-num,
+.esharq-fakedm-textarea {
+    padding: 8px 10px;
+    border: 1px solid var(--fdm-border);
+    border-radius: 8px;
+    background: var(--fdm-well);
+    color: var(--fdm-text);
+    font-size: 14px;
+    font-family: inherit;
+}
+
+.esharq-fakedm-date {
+    flex: 1;
+    min-width: 0;
+    font-variant-numeric: tabular-nums;
+}
+
+/* The native picker indicator is black-on-black in a dark theme. */
+.esharq-fakedm-date::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    filter: invert(0.7);
+}
+
+.esharq-fakedm-num {
+    width: 84px;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+}
+
+.esharq-fakedm-unit {
+    color: var(--fdm-dim);
+    font-size: 13px;
+}
+
+.esharq-fakedm-textarea {
+    width: 100%;
+    box-sizing: border-box;
+    resize: vertical;
+    line-height: 1.4;
+}
+
+/* After the three base rules above, so specificity ascends (stylelint enforces it). */
+.esharq-fakedm-date:focus,
+.esharq-fakedm-num:focus,
+.esharq-fakedm-textarea:focus {
+    outline: none;
+    border-color: var(--fdm-accent);
+}
+
+/* ΓöÇΓöÇ Answered / Missed ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
+.esharq-fakedm-seg {
+    flex: 1;
+    padding: 9px;
+    border: 1px solid var(--fdm-border);
+    border-radius: 8px;
+    background: var(--fdm-card);
+    color: var(--fdm-dim);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.esharq-fakedm-seg:hover {
+    background: var(--fdm-card-hover);
+}
+
+.esharq-fakedm-seg-ok {
+    background: var(--fdm-green);
+    border-color: transparent;
+    color: #fff;
+}
+
+.esharq-fakedm-seg-miss {
+    background: var(--fdm-red);
+    border-color: transparent;
+    color: #fff;
+}
+
+/* ΓöÇΓöÇ Actions ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
+.esharq-fakedm-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.esharq-fakedm-submit {
+    flex: 1;
+    padding: 11px;
+    border: none;
+    border-radius: 8px;
+    background: var(--fdm-accent);
+    color: var(--fdm-bg);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: filter 0.15s ease;
+}
+
+.esharq-fakedm-submit:hover {
+    filter: brightness(1.1);
+}
+
+.esharq-fakedm-clear {
+    padding: 11px 14px;
+    border: 1px solid var(--fdm-red);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--fdm-red);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.esharq-fakedm-clear:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.esharq-fakedm-clear:hover:not(:disabled) {
+    background: rgb(224 56 75 / 15%);
+}
+
+/* ΓöÇΓöÇ Injected list ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
+.esharq-fakedm-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 160px;
+    overflow-y: auto;
+}
+
+.esharq-fakedm-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    background: var(--fdm-card);
+}
+
+.esharq-fakedm-item-icon {
+    flex-shrink: 0;
+    font-size: 12px;
+}
+
+.esharq-fakedm-item-text {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--fdm-text);
+    font-size: 13px;
+}
+
+.esharq-fakedm-item-time {
+    flex-shrink: 0;
+    color: var(--fdm-dim);
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+}
+
+.esharq-fakedm-item-del {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--fdm-dim);
+    font-size: 12px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.esharq-fakedm-item-del:hover {
+    background: var(--fdm-card-hover);
+    color: var(--fdm-red);
+}
+
+/* DRAXXCORD_FAKEDM_OWNER_V181_CSS_BEGIN */
+/* Display only. Does not alter Discord roles or privileges. */
+.esharq-fakedm-owner-v181-shell {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+    min-width: 0;
+}
+.esharq-fakedm-owner-v181-shell > .esharq-fakedm-title {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.esharq-fakedm-owner-v181 {
+    margin-inline-start: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    flex: 0 1 auto;
+    min-width: 0;
+    max-width: 50%;
+    border: 1px solid #ff0000;
+    border-radius: 10px;
+    background: #000000;
+    padding: 4px 7px;
+    box-shadow: 0 0 12px rgba(255,0,0,.2);
+    color: #fff;
+}
+.esharq-fakedm-owner-v181-avatar {
+    flex: 0 0 28px;
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    object-fit: cover;
+    border-radius: 50%;
+    background: #120000;
+    border: 1px solid #ff0000;
+    color: #ff0000;
+    font-size: 20px;
+}
+.esharq-fakedm-owner-v181-info {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.05;
+}
+.esharq-fakedm-owner-v181-name,
+.esharq-fakedm-owner-v181-rank {
+    font-family: "Fredoka", "Trebuchet MS", "Segoe UI", sans-serif !important;
+    display: block;
+    max-width: 125px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.esharq-fakedm-owner-v181-name { font-size: 21px; font-weight: 700; color: #ffffff; }
+.esharq-fakedm-owner-v181-rank { font-size: 17px; font-weight: 700; color: #ff0000; letter-spacing: .4px; }
+/* DRAXXCORD_FAKEDM_OWNER_V181_CSS_END */
+
+
+
+/* DRAXX_FAKEDM_V19_CSS_BEGIN */
+/* DRAXXCORD — FAKE DM | PURE RED + PURE BLACK + CAVEAT */
+/* Scoped to this modal; has no effect on other DraxxCord plugins. */
+[role="dialog"]:has(.esharq-fakedm),
+[class*="modal_"]:has(> [class*="header_"] .dfdm-v19-owner) {
+    background: #000 !important;
+    color: #fff !important;
+    border: 1px solid #f00 !important;
+    border-radius: 14px !important;
+    box-shadow: 0 18px 60px #000, 0 0 25px rgb(255 0 0 / 16%) !important;
+}
+[role="dialog"]:has(.esharq-fakedm) [class*="header_"],
+[role="dialog"]:has(.esharq-fakedm) [class*="content_"],
+[role="dialog"]:has(.esharq-fakedm) [class*="footer_"] {
+    background: #000 !important;
+    color: #fff !important;
+}
+[role="dialog"]:has(.esharq-fakedm) [class*="header_"] {
+    border-bottom: 1px solid #910000 !important;
+}
+.esharq-fakedm,
+.esharq-fakedm-title,
+.esharq-fakedm *,
+.dfdm-v19-header,
+.dfdm-v19-header *,
+.esharq-fakedm-owner-v181-shell,
+.esharq-fakedm-owner-v181-shell *,
+.dfdm-v19-owner,
+.dfdm-v19-owner * {
+    font-family: "Fredoka", "Trebuchet MS", "Segoe UI", sans-serif !important;
+}
+.esharq-fakedm-title {
+    color: #fff !important;
+    font-size: 31px !important;
+    line-height: 1.1 !important;
+    font-weight: 700 !important;
+    letter-spacing: .3px;
+    text-shadow: 0 0 9px rgb(255 0 0 / 15%);
+}
+.dfdm-v19-header,
+.esharq-fakedm-heading,
+.esharq-fakedm-owner-v181-shell {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100%;
+    gap: 10px;
+    min-width: 0;
+}
+.dfdm-v19-owner {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex: 0 0 auto;
+    min-width: 0;
+    max-width: 48%;
+    padding: 3px 5px;
+    margin-left: auto;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    color: #fff;
+    cursor: pointer;
+    text-align: left;
+    transition: background .12s ease, border-color .12s ease;
+}
+.dfdm-v19-owner:hover,
+.dfdm-v19-owner:focus-visible {
+    background: #180000;
+    border-color: #ff0000;
+    outline: none;
+}
+.dfdm-v19-owner-avatar {
+    width: 33px;
+    height: 33px;
+    min-width: 33px;
+    border-radius: 50%;
+    border: 1px solid #8a0000;
+    object-fit: cover;
+}
+.dfdm-v19-owner-meta { display: flex; flex-direction: column; min-width: 0; line-height: 1; }
+.dfdm-v19-owner-name {
+    color: #fff !important;
+    font-size: 23px !important;
+    line-height: 1.05;
+    font-weight: 700;
+    max-width: 135px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.dfdm-v19-owner-rank {
+    color: #ff0000 !important;
+    font-size: 16px !important;
+    line-height: 1.1;
+    font-weight: 700;
+    letter-spacing: .7px;
+}
+.esharq-fakedm {
+    --fdm-bg: #000;
+    --fdm-well: #000;
+    --fdm-card: #080808;
+    --fdm-card-hover: #180000;
+    --fdm-border: #8b0000;
+    --fdm-text: #fff;
+    --fdm-dim: #ddd;
+    --fdm-accent: #ff0000;
+    --fdm-green: #ff0000;
+    --fdm-red: #ff0000;
+    background: #000 !important;
+    border: 1px solid #f00 !important;
+    border-radius: 13px !important;
+    padding: 16px !important;
+    margin: 0 !important;
+    color: #fff !important;
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
+    max-height: min(77vh, 740px);
+    overflow-y: auto;
+    scrollbar-color: #ff0000 #000;
+}
+.esharq-fakedm * { box-sizing: border-box; }
+.esharq-fakedm-note,
+.esharq-fakedm-ring-note {
+    background: #050505 !important;
+    border: 1px solid #720000 !important;
+    border-left: 3px solid #ff0000 !important;
+    border-radius: 9px !important;
+    color: #fff !important;
+    padding: 8px 11px !important;
+    font-size: 22px !important;
+    line-height: 1.17 !important;
+}
+.esharq-fakedm-label {
+    color: #fff !important;
+    font-size: 23px !important;
+    font-weight: 700 !important;
+    line-height: 1.1 !important;
+    letter-spacing: .4px;
+    margin-top: 3px;
+}
+.esharq-fakedm-tabs {
+    background: #000 !important;
+    border: 1px solid #430000 !important;
+    border-radius: 11px !important;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    padding: 4px;
+    gap: 5px;
+}
+.esharq-fakedm-tab {
+    background: #080808 !important;
+    color: #fff !important;
+    border: 1px solid #520000 !important;
+    border-radius: 8px !important;
+    font-weight: 700 !important;
+    font-size: 22px !important;
+    min-width: 0;
+    min-height: 44px;
+    padding: 8px 5px;
+    line-height: 1 !important;
+    cursor: pointer;
+}
+.esharq-fakedm-tab:hover,
+.esharq-fakedm-tab:focus-visible {
+    background: #220000 !important;
+    border-color: #ff0000 !important;
+}
+.esharq-fakedm-tab-on,
+.esharq-fakedm-tab-on:hover,
+.esharq-fakedm-tab-on:focus-visible {
+    background: #ff0000 !important;
+    color: #fff !important;
+    border-color: #ff0000 !important;
+    box-shadow: 0 0 11px rgb(255 0 0 / 18%) !important;
+}
+.esharq-fakedm-people { gap: 8px; }
+.esharq-fakedm-person {
+    background: #080808 !important;
+    border: 1px solid #630000 !important;
+    border-radius: 9px !important;
+    min-width: 0;
+    min-height: 48px;
+    padding: 8px 9px !important;
+    color: #fff !important;
+}
+.esharq-fakedm-person:hover { background: #170000 !important; border-color: #ff0000 !important; }
+.esharq-fakedm-person-on,
+.esharq-fakedm-person-on:hover {
+    background: #150000 !important;
+    border: 1px solid #ff0000 !important;
+    box-shadow: inset 3px 0 #ff0000;
+}
+.esharq-fakedm-avatar { width: 29px !important; height: 29px !important; }
+.esharq-fakedm-person-name {
+    color: #fff !important;
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.esharq-fakedm-date,
+.esharq-fakedm-num,
+.esharq-fakedm-textarea {
+    background: #000 !important;
+    color: #fff !important;
+    border: 1px solid #980000 !important;
+    border-radius: 9px !important;
+    font-size: 23px !important;
+    font-weight: 600 !important;
+    padding: 9px 11px !important;
+    line-height: 1.18 !important;
+    box-shadow: none !important;
+}
+.esharq-fakedm-date::-webkit-calendar-picker-indicator { filter: invert(1) !important; }
+.esharq-fakedm-textarea { width: 100%; min-height: 112px; resize: vertical; }
+.esharq-fakedm-textarea::placeholder,
+.esharq-fakedm-date::placeholder { color: #aaa !important; opacity: 1; }
+.esharq-fakedm-date:focus,
+.esharq-fakedm-num:focus,
+.esharq-fakedm-textarea:focus {
+    outline: none !important;
+    border-color: #ff0000 !important;
+    box-shadow: 0 0 0 1px #ff0000 !important;
+}
+.esharq-fakedm-chip {
+    background: #0a0a0a !important;
+    color: #fff !important;
+    border: 1px solid #640000 !important;
+    border-radius: 99px !important;
+    font-size: 19px !important;
+    font-weight: 700 !important;
+    padding: 6px 11px !important;
+}
+.esharq-fakedm-chip:hover { background: #1a0000 !important; border-color: #ff0000 !important; }
+.esharq-fakedm-unit { color: #fff !important; font-size: 20px !important; }
+.esharq-fakedm-seg {
+    background: #090909 !important;
+    color: #fff !important;
+    border: 1px solid #700000 !important;
+    border-radius: 9px !important;
+    font-size: 23px !important;
+    font-weight: 700 !important;
+    padding: 9px !important;
+}
+.esharq-fakedm-seg:hover { background: #1b0000 !important; }
+.esharq-fakedm-seg-ok,
+.esharq-fakedm-seg-miss {
+    background: #ff0000 !important;
+    border-color: #ff0000 !important;
+    color: #fff !important;
+}
+.esharq-fakedm-actions { display: flex; gap: 8px; margin-top: 8px; }
+.esharq-fakedm-submit {
+    flex: 1;
+    min-height: 47px;
+    padding: 9px 14px !important;
+    border: 1px solid #ff0000 !important;
+    border-radius: 9px !important;
+    background: #ff0000 !important;
+    color: #fff !important;
+    font-size: 29px !important;
+    font-weight: 700 !important;
+    line-height: 1 !important;
+    box-shadow: 0 0 10px rgb(255 0 0 / 19%);
+    cursor: pointer;
+}
+.esharq-fakedm-submit:hover { background: #d90000 !important; }
+.esharq-fakedm-clear {
+    padding: 9px 14px !important;
+    min-width: 94px;
+    border: 1px solid #ff0000 !important;
+    border-radius: 9px !important;
+    background: #000 !important;
+    color: #fff !important;
+    font-size: 23px !important;
+    font-weight: 700 !important;
+}
+.esharq-fakedm-clear:hover:not(:disabled) { background: #240000 !important; }
+.esharq-fakedm-clear:disabled { opacity: .45; }
+.esharq-fakedm-item {
+    background: #070707 !important;
+    border: 1px solid #4b0000 !important;
+    border-radius: 7px !important;
+}
+.esharq-fakedm-item-text { color: #fff !important; font-size: 20px !important; }
+.esharq-fakedm-item-icon { color: #ff0000 !important; font-size: 17px !important; }
+.esharq-fakedm-item-time { color: #ccc !important; font-size: 18px !important; }
+.esharq-fakedm-item-del { color: #fff !important; }
+.esharq-fakedm-item-del:hover { color: #ff0000 !important; }
+.esharq-fakedm::-webkit-scrollbar,
+.esharq-fakedm-list::-webkit-scrollbar { width: 7px; }
+.esharq-fakedm::-webkit-scrollbar-thumb,
+.esharq-fakedm-list::-webkit-scrollbar-thumb { background: #ff0000; border-radius: 20px; }
+@media (max-width:550px) {
+    .esharq-fakedm { padding: 12px !important; }
+    .esharq-fakedm-tab { font-size: 19px !important; }
+    .esharq-fakedm-person-name { font-size: 20px !important; }
+    .esharq-fakedm-actions { flex-wrap: wrap; }
+    .esharq-fakedm-clear { width: 100%; }
+    .dfdm-v19-owner-name { max-width: 95px; }
+}
+/* DRAXX_FAKEDM_V19_CSS_END */
+
+/* DRAXX_FAKEDM_FREDOKA_V20_BEGIN */
+/* Only typography: existing colors, buttons, behavior, owner click, and data stay as-is. */
+.esharq-fakedm,
+.esharq-fakedm *,
+.esharq-fakedm-title,
+.dfdm-v19-header,
+.dfdm-v19-header *,
+.dfdm-v19-owner,
+.dfdm-v19-owner *,
+.esharq-fakedm-owner-v181-shell,
+.esharq-fakedm-owner-v181-shell * {
+    font-family: "Fredoka", "Trebuchet MS", "Segoe UI", sans-serif !important;
+}
+/* Caveat was much narrower and taller; restore legible normal UI proportions. */
+.esharq-fakedm-title { font-size: 23px !important; line-height: 1.25 !important; font-weight: 600 !important; }
+.esharq-fakedm-note,
+.esharq-fakedm-ring-note { font-size: 13px !important; line-height: 1.45 !important; }
+.esharq-fakedm-label { font-size: 12px !important; line-height: 1.4 !important; font-weight: 600 !important; letter-spacing: .045em; }
+.esharq-fakedm-tab { font-size: 13px !important; line-height: 1.25 !important; font-weight: 600 !important; }
+.esharq-fakedm-person-name { font-size: 13px !important; font-weight: 500 !important; }
+.esharq-fakedm-date,
+.esharq-fakedm-num,
+.esharq-fakedm-textarea { font-size: 13px !important; line-height: 1.4 !important; font-weight: 400 !important; }
+.esharq-fakedm-chip { font-size: 11px !important; font-weight: 500 !important; }
+.esharq-fakedm-unit { font-size: 12px !important; }
+.esharq-fakedm-seg { font-size: 13px !important; font-weight: 600 !important; }
+.esharq-fakedm-submit { font-size: 15px !important; line-height: 1.25 !important; font-weight: 600 !important; }
+.esharq-fakedm-clear { font-size: 13px !important; line-height: 1.25 !important; font-weight: 600 !important; }
+.esharq-fakedm-item-text { font-size: 13px !important; }
+.esharq-fakedm-item-icon { font-size: 14px !important; }
+.esharq-fakedm-item-time { font-size: 11px !important; }
+.dfdm-v19-owner-name { font-size: 15px !important; line-height: 1.2 !important; font-weight: 600 !important; }
+.dfdm-v19-owner-rank { font-size: 11px !important; line-height: 1.25 !important; font-weight: 600 !important; }
+@media (max-width: 550px) {
+    .esharq-fakedm-tab { font-size: 12px !important; }
+    .esharq-fakedm-person-name { font-size: 12px !important; }
+}
+/* DRAXX_FAKEDM_FREDOKA_V20_END */

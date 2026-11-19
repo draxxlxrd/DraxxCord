@@ -1,0 +1,37 @@
+/* DraxxCord custom stream image modal */
+.vc-draxxcord-stream-title { flex: 1; font-size: 18px; font-weight: 700; color: var(--header-primary); }
+.vc-draxxcord-stream-intro { margin: 0 0 8px; font-size: 14px; color: var(--text-default); }
+.vc-draxxcord-stream-help { margin: 0 0 14px; opacity: .8; font-size: 12px; }
+.vc-draxxcord-stream-choose { display: inline-flex; cursor: pointer; padding: 9px 16px; border-radius: 6px; background: var(--brand-experiment, #5865f2); color: white; font-weight: 600; }
+.vc-draxxcord-stream-preview { display: block; margin-top: 14px; max-width: 100%; width: 454px; aspect-ratio: 16 / 9; object-fit: contain; border-radius: 8px; }
+.vc-draxxcord-stream-actions { display: flex; align-items: center; justify-content: flex-end; width: 100%; gap: 10px; }
+.vc-draxxcord-stream-actions > button { border: 0; border-radius: 6px; padding: 9px 12px; cursor: pointer; color: var(--text-default); background: var(--background-modifier-hover); }
+.vc-draxxcord-stream-actions > button.vc-draxxcord-stream-stop { background: #c33d45; color: white; }
+
+/* Account panel button (instead of chat-bar button) */
+.vc-draxxcord-account-slot { display: inline-flex; flex: 0 0 auto; align-items: center; justify-content: center; vertical-align: middle; }
+.vc-draxxcord-account-button { display: grid; place-items: center; width: 28px; height: 28px; padding: 4px; border: 0; border-radius: 7px; background: transparent; color: var(--interactive-normal, #b9bbbe); cursor: pointer; -webkit-app-region: no-drag; }
+.vc-draxxcord-account-button:hover { color: var(--interactive-hover, #fff); background: var(--background-modifier-hover, #35373c); }
+.vc-draxxcord-account-button svg { width: 19px; height: 19px; }
+
+/* BEGIN DRAXXCORD V4 ACCOUNT ICON STYLE */
+/* Stream Image / Umbral come BEFORE Mic, Headphones and Settings. */
+.vc-draxxcord-account-slot {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 28px;
+    min-width: 28px;
+}
+.vc-draxxcord-account-slot[data-draxxcord-slot="stream-image"] { order: -20 !important; }
+.vc-draxxcord-account-slot[data-draxxcord-slot="umbral"] { order: -19 !important; }
+.vc-draxxcord-account-button,
+.vc-draxxcord-account-button:not(:disabled),
+.vc-draxxcord-account-button:hover {
+    color: #f2f3f5 !important;
+    opacity: 1 !important;
+}
+.vc-draxxcord-account-button svg { color: inherit !important; opacity: 1 !important; }
+.vc-draxxcord-account-button:hover { background: var(--background-modifier-hover, #35373c) !important; }
+/* END DRAXXCORD V4 ACCOUNT ICON STYLE */
+

@@ -1,0 +1,6 @@
+/* Recreated compatibility CSS; this stylesheet was absent from the extracted original index source. */
+body.stream-proof-enabled :is([class*="messageContent_"], [class*="markup_"], [class*="imageWrapper_"], [class*="embedWrapper_"], [class*="attachment_"], [class*="video_"], [class*="voiceMessage_"], [class*="fileUpload_"], [class*="stickerAsset_"]) {
+    filter: blur(12px) !important;
+    transition: filter .18s ease;
+}
+body.stream-proof-enabled .stream-proof-revealed { filter: none !important; }

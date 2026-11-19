@@ -1,0 +1,45 @@
+/* DraxxCord Game Library v7.3 - only the Game Activity panel, no global theme/font changes. */
+.draxx-library-v72 {display:flex;flex-direction:column;gap:11px;padding:14px 12px 22px;background:transparent;color:#fff;font:inherit;min-width:0;min-height:0}
+.draxx-library-v72 .draxx-game-top {display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap}
+.draxx-library-v72 .draxx-game-top strong{font-size:14px;color:#fff}
+.draxx-library-v72 .draxx-game-top small{font-size:9px;color:#a7a7a7}
+.draxx-library-v72 .draxx-game-hint{margin:0;font-size:11px;line-height:1.45;color:#aaa}
+.draxx-library-v72 .draxx-game-state{padding:10px;border:1px solid #631111;background:#0d0404;border-radius:8px;font-size:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.draxx-library-v72 .draxx-game-state>span:last-child{color:#ddd;overflow-wrap:anywhere}
+.draxx-library-v72 .draxx-ga-online{color:#ff3434;font-weight:800}
+.draxx-library-v72 .draxx-ga-idle{color:#aaa;font-weight:800}
+.draxx-library-v72 .draxx-ga-search{display:flex;gap:6px;align-items:center}
+.draxx-library-v72 .draxx-game-input{background:#080808!important;color:#fff!important;border:1px solid #722!important;border-radius:7px;padding:8px 10px;font:inherit;width:100%;box-sizing:border-box;outline:none;min-width:0}
+.draxx-library-v72 .draxx-game-input:focus{border-color:#f22!important}
+.draxx-library-v72 .draxx-ga-search>button{border:1px solid #a00;border-radius:7px;background:#1b0707;color:#fff;cursor:pointer;padding:8px 10px;font:inherit}
+.draxx-library-v72 .draxx-ga-category-tabs{display:flex;gap:5px;overflow-x:auto;scrollbar-width:thin;scrollbar-color:#900 transparent;padding-bottom:5px;min-height:35px}
+.draxx-library-v72 .draxx-ga-category-tabs button{background:#101010;border:1px solid #363636;color:#ddd;border-radius:6px;white-space:nowrap;padding:7px 9px;font-size:10px;cursor:pointer;font:inherit}
+.draxx-library-v72 .draxx-ga-category-tabs button.selected{color:#fff;background:#b00000;border-color:#ff3434}
+.draxx-library-v72 .draxx-ga-count{font-size:10px;color:#bbb}
+.draxx-library-v72 .draxx-ga-library{display:flex;flex-direction:column;gap:6px;max-height:310px;min-height:80px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#822 transparent;padding-right:3px}
+.draxx-library-v72 .draxx-ga-game{background:#0e0e10;border:1px solid #2f2f35;border-radius:8px;padding:7px;display:flex;align-items:center;gap:9px;min-width:0}
+.draxx-library-v72 .draxx-ga-game.draxx-ga-active{background:#190707;border-color:#f22}
+.draxx-library-v72 .draxx-ga-game>img,.draxx-library-v72 .draxx-ga-game-placeholder{flex:0 0 38px;width:38px;height:38px;border-radius:6px;background:#1e1e22;object-fit:contain;text-align:center;line-height:38px}
+.draxx-library-v72 .draxx-ga-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;color:#eee}
+.draxx-library-v72 .draxx-ga-toggle{padding:8px 10px;border-radius:7px;border:1px solid #3c3c43;background:#28282d;color:white;cursor:pointer;min-width:54px;font-size:11px;font-weight:700;font-family:inherit}
+.draxx-library-v72 .draxx-ga-toggle.on{background:#e00000;border-color:#ff4444;box-shadow:0 0 10px #ad101077}
+.draxx-library-v72 .draxx-ga-config{display:flex;flex-direction:column;gap:9px;border:1px solid #451010;background:#070707;border-radius:9px;padding:11px}
+.draxx-library-v72 .draxx-ga-config>strong{font-size:11px}
+.draxx-library-v72 .draxx-ga-config label{font-size:11px;color:#ddd;display:flex;flex-direction:column;gap:4px}
+.draxx-library-v72 .draxx-ga-config .draxx-game-check{flex-direction:row;align-items:center;gap:7px;line-height:1.45}
+.draxx-library-v72 .draxx-game-check input{accent-color:#e00}
+.draxx-library-v72 .draxx-ga-apply,.draxx-library-v72 .draxx-ga-stop{border-radius:7px;cursor:pointer;padding:9px;font:inherit;color:#fff;border:1px solid #d11;background:#9d0909}
+.draxx-library-v72 .draxx-ga-stop{border-color:#414141;background:#161616}
+.draxx-library-v72 button:disabled{opacity:.45;cursor:not-allowed}
+.draxx-library-v72 .draxx-game-error{color:#ff6666;font-size:11px;margin:0}
+
+/* v7.3 additions: scoped controls and paging; no global font/theme changes */
+.draxx-library-v73 .draxx-ga-filters{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
+.draxx-library-v73 .draxx-ga-filters .draxx-game-check{font-size:10px;color:#bbb;display:flex;align-items:center;gap:5px;white-space:nowrap}
+.draxx-library-v73 .draxx-ga-filters input{accent-color:#e00}
+.draxx-library-v73 .draxx-ga-filters button,.draxx-library-v73 .draxx-ga-filters select{border:1px solid #4f1414;border-radius:6px;background:#101012;color:#ddd;padding:5px 7px;font:inherit;font-size:10px;cursor:pointer}
+.draxx-library-v73 .draxx-ga-filters select option{background:#111;color:#fff}
+.draxx-library-v73 .draxx-ga-pagination{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:7px}
+.draxx-library-v73 .draxx-ga-pagination button{padding:6px 10px;border-radius:6px;background:#111;border:1px solid #6f1717;color:#fff;cursor:pointer;font-size:11px;font-family:inherit}
+.draxx-library-v73 .draxx-ga-pagination button:disabled{opacity:.3;cursor:default}
+.draxx-library-v73 .draxx-ga-pagination span{font-size:10px;color:#bbb;min-width:55px;text-align:center}

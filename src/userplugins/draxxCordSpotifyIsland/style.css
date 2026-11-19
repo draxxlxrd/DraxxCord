@@ -1,0 +1,146 @@
+/* DraxxCord Spotify Island — standalone adaptation of DynamicIslande (GPL-3.0). */
+.vc-draxxcord-spotify-root {
+    position: fixed;
+    z-index: 2147483000;
+    top: 35px;
+    left: 50%;
+    width: min(340px, calc(100vw - 420px));
+    min-width: 235px;
+    color: var(--text-default);
+    background: var(--background-floating);
+    border: 1px solid var(--border-subtle, #333);
+    border-radius: 25px;
+    box-shadow: 0 10px 28px #0006;
+    overflow: hidden;
+    isolation: isolate;
+    transform: translateX(-50%);
+    transition: width .4s ease, border-radius .4s ease, background-color .2s ease;
+    -webkit-app-region: no-drag;
+}
+.vc-draxxcord-spotify-color-amoled {
+    --background-floating: #050505;
+    --border-subtle: #313131;
+    --text-default: #ddd;
+    --header-primary: #fff;
+    --text-muted: #b3b3b3;
+}
+.vc-draxxcord-spotify-expanded { width: min(430px, calc(100vw - 320px)); border-radius: 20px; }
+.vc-draxxcord-spotify-summary {
+    display: flex;
+    height: 38px;
+    width: 100%;
+    padding: 3px 8px 3px 5px;
+    align-items: center;
+    gap: 9px;
+    border: 0;
+    color: inherit;
+    font: inherit;
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+}
+.vc-draxxcord-spotify-art, .vc-draxxcord-spotify-placeholder {
+    width: 32px;
+    height: 32px;
+    flex: none;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 2px 8px #0006;
+}
+.vc-draxxcord-spotify-placeholder { display: grid; place-items: center; background: #171717; color: #1db954; }
+.vc-draxxcord-spotify-copy { display: flex; flex: 1; flex-direction: column; min-width: 0; gap: 0; }
+.vc-draxxcord-spotify-copy strong,
+.vc-draxxcord-spotify-copy small { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.vc-draxxcord-spotify-copy strong { color: var(--header-primary); font-size: 12px; line-height: 15px; font-weight: 650; }
+.vc-draxxcord-spotify-copy small { color: var(--text-muted); font-size: 10px; line-height: 12px; }
+.vc-draxxcord-spotify-equalizer { display: flex; height: 18px; width: 17px; flex: none; align-items: center; justify-content: center; gap: 2px; }
+.vc-draxxcord-spotify-equalizer i { display: block; height: 4px; width: 2px; border-radius: 2px; background: #1ed760; animation: vc-draxxcord-spotify-pulse .65s ease-in-out infinite alternate; }
+.vc-draxxcord-spotify-equalizer i:nth-child(2) { animation-delay: -.3s; animation-duration: .5s; }
+.vc-draxxcord-spotify-equalizer i:nth-child(3) { animation-delay: -.1s; animation-duration: .85s; }
+.vc-draxxcord-spotify-root:not(.vc-draxxcord-spotify-playing) .vc-draxxcord-spotify-equalizer i { animation-play-state: paused; }
+@keyframes vc-draxxcord-spotify-pulse { from { height: 3px; } to { height: 16px; } }
+.vc-draxxcord-spotify-progress-mini { display: block; width: 23px; height: 3px; background: #525258; border-radius: 3px; overflow: hidden; }
+.vc-draxxcord-spotify-progress-mini > span { display: block; height: 100%; background: #7c76ff; border-radius: inherit; }
+.vc-draxxcord-spotify-details { max-height: 0; opacity: 0; overflow: hidden; transition: max-height .4s ease, opacity .2s ease; }
+.vc-draxxcord-spotify-details-open { max-height: 130px; opacity: 1; }
+.vc-draxxcord-spotify-buttons { display: flex; justify-content: center; gap: 12px; padding: 8px; }
+.vc-draxxcord-spotify-control { width: 33px; height: 33px; display: grid; place-items: center; background: #19191e; color: #f6f6f6; border: 1px solid #303036; border-radius: 50%; cursor: pointer; }
+.vc-draxxcord-spotify-control:hover { background: #28282f; color: #1ed760; }
+.vc-draxxcord-spotify-control svg { display: block; width: 18px; height: 18px; fill: currentColor; }
+.vc-draxxcord-spotify-progress-row { display: flex; gap: 8px; align-items: center; padding: 3px 14px 11px; color: var(--text-muted); font-size: 10px; }
+.vc-draxxcord-spotify-progress-row input[type="range"] { flex: 1; width: 0; height: 4px; accent-color: #1ed760; cursor: pointer; }
+
+/* Hide only the default SpotifyControls panel. The SpotifyStore and our island remain active. */
+body.vc-draxxcord-hide-original-spotify #vc-spotify-player { display: none !important; }
+
+/* Make the Island visible even when Discord doesn't report a Spotify track. */
+#vc-draxxcord-spotify-island-mount { position: fixed; inset: 0; pointer-events: none; z-index: 2147483000; }
+#vc-draxxcord-spotify-island-mount .vc-draxxcord-spotify-root { pointer-events: auto; }
+.vc-draxxcord-spotify-idle { display: flex; align-items: center; gap: 9px; padding: 10px 15px; min-height: 36px; width: 250px; font-size: 12px; }
+.vc-draxxcord-spotify-idle-icon { color: #1db954; font-weight: 800; font-size: 18px; }
+.vc-draxxcord-spotify-idle-label { color: #bbb; }
+.vc-draxxcord-spotify-error { padding: 9px; font-size: 11px; max-width: 300px; }
+
+/* v5: top-center placement in Discord title bar, on top of Discord overlays */
+#vc-draxxcord-spotify-island-mount { z-index: 2147483646 !important; }
+#vc-draxxcord-spotify-island-mount .vc-draxxcord-spotify-root {
+    top: 5px;
+    z-index: 2147483646;
+    max-width: calc(100vw - 300px);
+}
+#vc-draxxcord-spotify-island-mount.vc-draxxcord-spotify-mount-failed {
+    position: fixed;
+    left: 50%; top: 6px; transform: translateX(-50%);
+    z-index: 2147483646; pointer-events: auto;
+    background: #23151a; color: #ffbcc3; border: 1px solid #a55260;
+    border-radius: 12px; padding: 8px 13px; font-size: 12px;
+}
+
+/* DRAXX-2.8.2-DIRECT-SPOTIFY-STYLES */
+/* Dedicated settings-based styling, scoped to DraxxCord Spotify Island only. */
+.vc-draxxcord-spotify-color-silver {
+    --background-floating:#0b0d12;
+    --border-subtle:#9099aa;
+    --text-default:#e9edf4;
+    --header-primary:#fff;
+    --text-muted:#bfc6d1;
+    border-color:rgba(222,230,243,.52);
+    background:linear-gradient(110deg,#0a0d12,#1b202b);
+}
+.vc-draxxcord-spotify-color-crimson {
+    --background-floating:#0f0508;
+    --border-subtle:#9f3047;
+    --text-default:#f3dde4;
+    --header-primary:#fff;
+    --text-muted:#ceabb8;
+    border-color:rgba(219,81,111,.48);
+    background:linear-gradient(110deg,#0b0508,#230d17);
+}
+.vc-draxxcord-spotify-color-rgb {
+    --background-floating:#0b0d12;
+    --text-default:#f3f4fa;
+    --header-primary:#fff;
+    --text-muted:#c4c9d2;
+    border-color:#b6c9f3;
+    background:linear-gradient(115deg,#0c0e15,#151a25);
+    animation:vc-draxx-island-rgb 7s linear infinite;
+}
+.vc-draxxcord-spotify-color-silver.vc-draxxcord-spotify-glow {box-shadow:0 10px 28px #0009,0 0 19px rgba(211,223,242,.22);}
+.vc-draxxcord-spotify-color-crimson.vc-draxxcord-spotify-glow {box-shadow:0 10px 28px #0009,0 0 19px rgba(222,69,107,.25);}
+.vc-draxxcord-spotify-color-rgb:not(.vc-draxxcord-spotify-glow) {animation:none;box-shadow:0 10px 28px #0006;}
+.vc-draxxcord-spotify-color-silver .vc-draxxcord-spotify-equalizer i {background:#e8edf6;}
+.vc-draxxcord-spotify-color-crimson .vc-draxxcord-spotify-equalizer i {background:#dc4868;}
+.vc-draxxcord-spotify-color-rgb .vc-draxxcord-spotify-equalizer i {background:#c4b9f8;}
+.vc-draxxcord-spotify-color-silver .vc-draxxcord-spotify-progress-mini > span {background:#cbd2df;}
+.vc-draxxcord-spotify-color-crimson .vc-draxxcord-spotify-progress-mini > span {background:#dc4868;}
+.vc-draxxcord-spotify-color-rgb .vc-draxxcord-spotify-progress-mini > span {background:#b6c9f3;}
+@keyframes vc-draxx-island-rgb {
+    0%,100% {border-color:#b6c9f3;box-shadow:0 10px 28px #0009,0 0 17px #8eb8f855;}
+    25% {border-color:#cf9af5;box-shadow:0 10px 28px #0009,0 0 17px #bb81ff55;}
+    50% {border-color:#f4afcb;box-shadow:0 10px 28px #0009,0 0 17px #ff91ba55;}
+    75% {border-color:#9ddcd4;box-shadow:0 10px 28px #0009,0 0 17px #7bdfd455;}
+}
+@media (prefers-reduced-motion:reduce) {
+    .vc-draxxcord-spotify-color-rgb {animation:none;}
+}
+/* DRAXX-2.8.2-DIRECT-SPOTIFY-END */
