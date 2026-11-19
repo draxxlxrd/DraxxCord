@@ -54,11 +54,15 @@ jobs:
               run: |
                   echo "release_tag=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
-            - name: Upload DevBuild as release
-              if: github.repository == 'Vendicated/Vencord'
+            - name: Upload DraxxCord DevBuild as release
+              if: github.repository == 'draxxlxrd/DraxxCord'
               run: |
-                  gh release upload devbuild --clobber dist/*
-                  gh release edit devbuild --title "DevBuild $RELEASE_TAG"
+                  if gh release view devbuild >/dev/null 2>&1; then
+                      gh release upload devbuild --clobber dist/*
+                      gh release edit devbuild --title "DevBuild $RELEASE_TAG"
+                  else
+                      gh release create devbuild dist/* --title "DevBuild $RELEASE_TAG" --notes "Automatic DraxxCord development build."
+                  fi
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                   RELEASE_TAG: ${{ env.release_tag }}
