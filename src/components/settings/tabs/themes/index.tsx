@@ -96,5 +96,5 @@ function UserscriptThemesTab() {
 }
 
 export default IS_USERSCRIPT
-    ? wrapTab(UserscriptThemesTab, "Themes")
-    : wrapTab(ThemesTab, "Themes");
+    ? wrapTab(UserscriptThemesTab, "DraxxCord Themes")
+    : wrapTab(ThemesTab, "DraxxCord Themes");

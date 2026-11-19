@@ -27,7 +27,7 @@ function buildPluginMenu() {
     return (
         <Menu.MenuItem
             id="plugins"
-            label="Plugins"
+            label="DraxxCord Plugins"
             action={() => openSettingsTabModal(PluginsTab)}
         >
             {pluginEntries}
@@ -188,7 +188,7 @@ export function buildThemeMenu() {
     return (
         <Menu.MenuItem
             id="themes"
-            label="Themes"
+            label="DraxxCord Themes"
             action={() => openSettingsTabModal(ThemesTab)}
         >
             {buildThemeMenuEntries()}
