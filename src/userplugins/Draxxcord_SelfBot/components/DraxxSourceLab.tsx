@@ -90,6 +90,6 @@ export function DraxxSourceLab() {
                 </div>
             </div>;
         })}
-        <p style={{ color: "#999", fontSize: 11, lineHeight: 1.5 }}>Note: the badges are managed in the separate Badges tab. For plugin-specific settings, open Vencord Settings → Plugins. Source modules are disabled by default until you enable them.</p>
+        <p style={{ color: "#999", fontSize: 11, lineHeight: 1.5 }}>Note: the badges are managed in the separate Badges tab. For plugin-specific settings, open DraxxCord Settings → DraxxCord Plugins. Source modules are disabled by default until you enable them.</p>
     </div>;
 }
